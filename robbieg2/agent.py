@@ -235,7 +235,7 @@ If you are unsure about whether a field is selected you can try to click it to e
 and the result has not changed, for example, if a field has not changed to meet you expectation, then explore the idea of clicking it again to change it
 and ensure it has the correct text that you want there.
 
-
+Remember, remember that you DO NOT have the ability to take a screenshot to verify your results. 
 
 Sometimes a page isn't fully loaded yet. If that is the case feel free to wait or pause briefly for the screenshot to indicate a fully loaded page.
 
