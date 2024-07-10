@@ -1,0 +1,29 @@
+api_version: v1
+kind: TaskAgent
+name: "RobbieG2"
+description: "A Gen 2 AI Agent that uses OCR, Canny Composite, and Grid to navigate GUIs"
+tags:
+  - "gui"
+supports:
+  - "desktop"
+cmd: "poetry run python -m robbieg2.server"
+img_repo: "us-central1-docker.pkg.dev/agentsea-dev/guisurfer/robbieg2"
+versions:
+  latest: "us-central1-docker.pkg.dev/agentsea-dev/guisurfer/robbieg2:latest"
+runtimes:
+  - type: "agent"
+    preference:
+      - "process"
+      - "docker"
+      - "kube"
+llm_providers:
+  preference:
+    - "gpt-4o"
+public: True
+icon: https://storage.googleapis.com/guisurfer-assets/SurfPizza.webp
+resource_requests:
+  cpu: "1"
+  memory: "2Gi"
+resource_limits:
+  cpu: "2"
+  memory: "4Gi"
