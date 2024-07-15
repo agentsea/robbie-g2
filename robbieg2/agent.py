@@ -238,7 +238,7 @@ Specifically, if you are using the Firefox browser, remember that you can use th
 Specifically, if you are using the Chrome browser, remember that you can use the following key commands:
 
 * Press Ctrl + L or Alt + D to highlight the URL, then press Delete to clear it if there is incorrect text in the URL bar that you need to clear out.
-* `clean_text` is also a special command to clear fields
+* `clean_text` is also a special command to clear fields but you MUST ensure the field is IN FOCUS first before using this command.
 * Ctrl + Shift + Tab switches to the previous tab which is very useful if a new tab you don't want is opened and you need to get back to the last tab. 
 * Ctrl + Tab switches to the next tab.	
 * Press Backspace or Alt and the left arrow together - to go to the previous page in your browsing history for the tab.
