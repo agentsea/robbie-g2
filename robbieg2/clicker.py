@@ -148,14 +148,10 @@ def find_coordinates(semdesk, description: str, text: str) -> dict:
     )
     region_of_interest, bounding_box = method(semdesk, starting_img, starting_img_path, description, click_hash, "region")
 
-    # Escape exit, if we didn't find the region of interest because the element is not on a screen.
+    # Escape exit, if we didn't find the region of interest because the element is not on a screen:
+    # we fall back to bruteforce method
     if region_of_interest is None:
-        semdesk.task.post_message(
-            role="Clicker",
-            msg=f"Failed to find {description} on the image. Getting back to Actor.",
-            thread="debug",
-        )
-        return None
+        return backup_find_coordinates(semdesk, description)
     
     region_of_interest_b64 = image_to_b64(region_of_interest)
     semdesk.task.post_message(
@@ -229,14 +225,10 @@ def find_coordinates(semdesk, description: str, text: str) -> dict:
     total_upscale *= UPSCALE_FACTOR
     new_region_of_interest, relative_bounding_box = method(semdesk, region, region_of_interest_path, description, click_hash, "zoom_1")
 
-    # Escape exit, if we didn't find the region of interest because the element is not on a screen.
+    # Escape exit, if we didn't find the region of interest because the element is not on a screen:
+    # we fall back to bruteforce method
     if new_region_of_interest is None:
-        semdesk.task.post_message(
-            role="Clicker",
-            msg=f"Failed to find {description} on the image. Getting back to Actor.",
-            thread="debug",
-        )
-        return None
+        return backup_find_coordinates(semdesk, description)
 
     absolute_box_zoomed = relative_bounding_box.to_absolute_with_upscale(
         bounding_boxes[-1], total_upscale
@@ -250,19 +242,90 @@ def find_coordinates(semdesk, description: str, text: str) -> dict:
     total_upscale *= UPSCALE_FACTOR
     last_region_of_interest, relative_bounding_box = method(semdesk, region, region_of_interest_path, description, click_hash, "zoom_2")
 
-    # Escape exit, if we didn't find the region of interest because the element is not on a screen.
+    # Escape exit, if we didn't find the region of interest because the element is not on a screen:
+    # we fall back to bruteforce method
     if last_region_of_interest is None:
-        semdesk.task.post_message(
-            role="Clicker",
-            msg=f"Failed to find {description} on the image. Getting back to Actor.",
-            thread="debug",
-        )
-        return None
+        return backup_find_coordinates(semdesk, description)
 
     absolute_box_zoomed = relative_bounding_box.to_absolute_with_upscale(
         bounding_boxes[-1], total_upscale
     )
     bounding_boxes.append(absolute_box_zoomed)
+
+    x_mid, y_mid = bounding_boxes[-1].center()
+    logger.info(f"clicking exact coords {x_mid}, {y_mid}")
+    semdesk.task.post_message(
+        role="Clicker",
+        msg=f"Clicking coordinates {x_mid}, {y_mid}",
+        thread="debug",
+    )
+
+    # LAST POINT OF POTENTIAL RETURN - WE ALWAYS RETURN SOMETHING FROM HERE, UNLESS THERE WAS AN EXCEPTION
+    semdesk.results["full_grid"] += 1
+    debug_img = _debug_image(
+        starting_img.copy(), bounding_boxes, (x_mid, y_mid)
+    )
+    semdesk.task.post_message(
+        role="Clicker",
+        msg=f"Final debug img",
+        thread="debug",
+        images=[image_to_b64(debug_img)],
+    )
+    return {
+        "x": x_mid,
+        "y": y_mid
+    }
+
+def backup_find_coordinates(semdesk, description: str) -> dict:
+    # This is a backup method of finding coordinates to click on. If the core method above fails at some point, 
+    # with a region_of_interest being 0 (i.e. not found), we try ones again through the most bruteforce mechanics that we have: 
+    # running three level of Grid + Zoom In; if that fails too, then we surely get back to Big Brain and ask some questions.
+    semdesk.task.post_message(
+        role="Clicker",
+        msg=f"Coordinates are not found. Falling back to bruteforce 3-level Grid Zoom In.",
+        thread="debug",
+    )
+
+    click_hash = hashlib.md5(description.encode()).hexdigest()[:5]
+    bounding_boxes = []
+    total_upscale = 1
+    method = run_grid
+
+    starting_img_b64 = semdesk.desktop.take_screenshot()
+    starting_img = b64_to_image(starting_img_b64)
+    starting_img_path = os.path.join(semdesk.img_path, f"{click_hash}_starting.png")
+    starting_img.save(starting_img_path)
+    bounding_boxes.append(Box(0, 0, starting_img.width, starting_img.height))
+
+    region_of_interest = starting_img.copy()
+
+    for i in [0, 1, 2]:
+        semdesk.task.post_message(
+            role="Clicker",
+            msg=f"Zooming in, level {i}...",
+            thread="debug",
+        )
+
+        region = region_of_interest.copy()
+        region = region.resize((region.width * UPSCALE_FACTOR, region.height * UPSCALE_FACTOR), resample=0)
+        region_of_interest_path = os.path.join(semdesk.img_path, f"{click_hash}_grid_region_{i}.png")
+        region.save(region_of_interest_path)
+        total_upscale *= UPSCALE_FACTOR
+        region_of_interest, relative_bounding_box = method(semdesk, region, region_of_interest_path, description, click_hash, "zoom_{i}")
+
+        # Escape exit, if we didn't find the region of interest because the element is not on a screen.
+        if region_of_interest is None:
+            semdesk.task.post_message(
+                role="Clicker",
+                msg=f"Failed to find {description} on the image. Getting back to Actor.",
+                thread="debug",
+            )
+            return None
+
+        absolute_box_zoomed = relative_bounding_box.to_absolute_with_upscale(
+            bounding_boxes[-1], total_upscale
+        )
+        bounding_boxes.append(absolute_box_zoomed)
 
     x_mid, y_mid = bounding_boxes[-1].center()
     logger.info(f"clicking exact coords {x_mid}, {y_mid}")
