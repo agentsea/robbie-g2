@@ -1,17 +1,40 @@
-# Robbie G2
+<!-- PROJECT LOGO -->
+<br />
+<p align="center">
+  <h1 align="center">Robbie G2</h1>
+    <p align="center">
+    <img src="images/robbie.jpg" alt="Robbie G2 Logo" width="200" style="border-radius: 50px;">
+    </p>
+    <p align="center">
+    <strong>Gen 2</strong> AI Agent that uses OCR, Canny Composite, and Grid to navigate GUIs
+    <br />
+    <br />
+    <a href="https://docs.hub.agentsea.ai/introduction"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/agentsea/robbie-g2">View Demo</a>
+    ·
+    <a href="https://github.com/agentsea/robbie-g2/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/agentsea/robbie-g2/issues">Request Feature</a>
+  </p>
+</p>
 
-Robbie G2 is a Gen 2 AI Agent that uses OCR, Canny Composite, and Grid to navigate GUIs.
+**Robbie G2** is our cutting-edge, second-generation AI Agent that's revolutionizing the way we interact with complex real-life GUIs! This incredible AI is capable of navigating intricate interfaces and solving a wide array of tasks, from finding information and booking accommodations to sending emails, posting tweets, and even developing programs. Powered by an Ubuntu-based VM, Robbie G2 skillfully manipulates the mouse and keyboard to achieve its goals.
 
-* [Demo](link)
-* [Deep Dive](link)
+‣ Ready to dive in? Follow the instructions below to get started on your AI adventure!
 
-## Install
+‣ Curious about the inner workings of Robbie G2? Stay tuned for our upcoming Deep Dive, where you'll discover how this AI thinks and perceives the world!
+
+‣ Join our vibrant community on [Discord](https://discord.gg/hhaq7XYPS6) to discuss Robbie G2, share experiences, and explore the fascinating world of AI Agents!
+
+## Quick Start
+
+Install SurfKit
 
 ```sh
 pip install surfkit
 ```
-
-## Quick Start
 
 Create a tracker
 
@@ -39,10 +62,6 @@ surfkit solve "Search for common varieties of french ducks" \
   --device device01 \
   --agent agent01
 ```
-
-## Community
-
-Come join us on [Discord](https://discord.gg/hhaq7XYPS6).
 
 ## Documentation
 
