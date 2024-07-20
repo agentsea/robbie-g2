@@ -30,31 +30,66 @@
 
 ## Quick Start
 
-Install SurfKit
+### Prerequisites
+
+* [Install Docker](https://docs.docker.com/engine/install/) - you need it to run a Tracker
+* [Install QEMU](https://docs.hub.agentsea.ai/configuration/qemu) OR [Configure GCP](https://docs.hub.agentsea.ai/configuration/gcp) OR [Configure AWS](https://docs.hub.agentsea.ai/configuration/aws) - you need one of these to host a Device
+
+### Setup 
+
+1. Setup your OpenAI API key:
 
 ```sh
-pip install surfkit
+export OPENAI_API_KEY=<your key>
 ```
 
-Create a tracker
+2. Clone the repository and go to the root folder:
+
+```sh
+git clone git@github.com:agentsea/robbie-g2.git && cd robbie-g2
+```
+
+3. Install dependencies:
+
+```sh
+poetry install
+```
+
+### Creating required entities
+
+4. Create a tracker:
 
 ```sh
 surfkit create tracker --name tracker01
 ```
 
-Create a device
+5. Create a device:
+
+  - If you are using QEMU:
+
+```sh
+surfkit create device --provider qemu --name device01
+```
+
+  - If you are using GCE:
 
 ```sh
 surfkit create device --provider gce --name device01
 ```
 
-Create the agent
+  - If you are using AWS:
 
 ```sh
-surfkit create agent -t robbie/RobbieG2 --name agent01
+surfkit create device --provider aws --name device01
 ```
 
-Solve a task
+6. Create an agent:
+
+```sh
+surfkit create agent --name agent01
+```
+
+### Solving a task
 
 ```sh
 surfkit solve "Search for common varieties of french ducks" \
@@ -66,38 +101,3 @@ surfkit solve "Search for common varieties of french ducks" \
 ## Documentation
 
 See our [docs](https://docs.hub.agentsea.ai) for more information on how to use Surfkit.
-
-## Developing
-
-Install dependencies
-
-```sh
-poetry install
-```
-
-Create a tracker
-
-```sh
-surfkit create tracker --name tracker01
-```
-
-Create a device
-
-```sh
-surfkit create device --provider gce --name device01
-```
-
-Create the agent
-
-```sh
-surfkit create agent --name agent01
-```
-
-Solve a task
-
-```sh
-surfkit solve "Search for common varieties of french ducks" \
-  --tracker tracker01 \
-  --device device01 \
-  --agent agent01
-```
