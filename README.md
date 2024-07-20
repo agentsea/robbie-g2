@@ -43,13 +43,19 @@
 export OPENAI_API_KEY=<your key>
 ```
 
-2. Clone the repository and go to the root folder:
+2. Install/upgrade SurfKit:
+
+```sh
+pip install -U surfkit
+```
+
+3. Clone the repository and go to the root folder:
 
 ```sh
 git clone git@github.com:agentsea/robbie-g2.git && cd robbie-g2
 ```
 
-3. Install dependencies:
+4. Install dependencies:
 
 ```sh
 poetry install
@@ -57,13 +63,13 @@ poetry install
 
 ### Creating required entities
 
-4. Create a tracker:
+5. Create a tracker:
 
 ```sh
 surfkit create tracker --name tracker01
 ```
 
-5. Create a device:
+6. Create a device:
 
   - If you are using QEMU:
 
@@ -83,7 +89,7 @@ surfkit create device --provider gce --name device01
 surfkit create device --provider aws --name device01
 ```
 
-6. Create an agent:
+7. Create an agent:
 
 ```sh
 surfkit create agent --name agent01
