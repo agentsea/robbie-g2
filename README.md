@@ -20,8 +20,6 @@
   </p>
 </p>
 
-**Robbie G2** 
-
 Meet Robbie, or Gen 2 agent. 
 
 Robbie navigates GUIs to solve tasks for you.  
