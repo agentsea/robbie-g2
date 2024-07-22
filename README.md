@@ -20,13 +20,19 @@
   </p>
 </p>
 
-**Robbie G2** is our cutting-edge, second-generation AI Agent that's revolutionizing the way we interact with complex real-life GUIs! This incredible AI is capable of navigating intricate interfaces and solving a wide array of tasks, from finding information and booking accommodations to sending emails, posting tweets, and even developing programs. Powered by an Ubuntu-based VM, Robbie G2 skillfully manipulates the mouse and keyboard to achieve its goals.
+**Robbie G2** 
 
-‣ Ready to dive in? Follow the instructions below to get started on your AI adventure!
+Meet Robbie, or Gen 2 agent. 
 
-‣ Curious about the inner workings of Robbie G2? Stay tuned for our upcoming Deep Dive, where you'll discover how this AI thinks and perceives the world!
+Robbie navigates GUIs to solve tasks for you.  
 
-‣ Join our vibrant community on [Discord](https://discord.gg/hhaq7XYPS6) to discuss Robbie G2, share experiences, and explore the fascinating world of AI Agents!
+Unlike other bots, he doesn't just work on the web because he doesn't use Playwright. Robbie is a pure multimodal bot.  He can navigate the web or a desktop.  
+
+That means he can navigate web pages and SaaS apps or he can work on a remote desktop and send emails, search for flights, check Slack, do research and more. 
+
+Robbie-g2, aka Gen 2, is a leap from our first gen agents, SurfPizza and SurfSlicer.  He's very capable at navigating complex, never before seen GUIs via a remote virtual desktop which the AgentSea stack serves up as a device to him via DeviceBay. He connects to it via ToolFuse and AgentDesk, which lets him know what he can do with it, like move the mouse, send key commands, etc. 
+
+‣ Check out our community on [Discord](https://discord.gg/hhaq7XYPS6) where we develop in the open, share research and connect with other developers who are building cutting edge agents or who just want to use them to get things done!
 
 ## Quick Start
 
