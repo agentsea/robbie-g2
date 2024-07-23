@@ -34,6 +34,9 @@ Robbie-g2, aka Gen 2, is a leap from our first gen agents, SurfPizza and SurfSli
 
 ‣ Check out our community on [Discord](https://discord.gg/hhaq7XYPS6) where we develop in the open, share research and connect with other developers who are building cutting edge agents or who just want to use them to get things done!
 
+[![Meet Robbie](https://img.youtube.com/vi/R6rR27I6oFg&t=71s/0.jpg)](https://www.youtube.com/watch?v=R6rR27I6oFg&t=71s)
+
+
 ## Quick Start
 
 ### Prerequisites
