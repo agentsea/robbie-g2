@@ -34,7 +34,11 @@ Robbie-g2, aka Gen 2, is a leap from our first gen agents, SurfPizza and SurfSli
 
 ‣ Check out the deep dive video right here:
 
-[![Watch the video](https://img.youtube.com/vi/R6rR27I6oFg/0.jpg)](https://www.youtube.com/watch?v=R6rR27I6oFg&t=71s)
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=R6rR27I6oFg&t=71s">
+    <img src="https://img.youtube.com/vi/R6rR27I6oFg/0.jpg" alt="Watch the video">
+  </a>
+</div>
 
 
 ## Quick Start
