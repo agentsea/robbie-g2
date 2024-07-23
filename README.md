@@ -20,15 +20,13 @@
   </p>
 </p>
 
-**Robbie G2** 
-
 Meet Robbie, or Gen 2 agent. 
 
 Robbie navigates GUIs to solve tasks for you.  
 
 Unlike other bots, he doesn't just work on the web because he doesn't use Playwright. Robbie is a pure multimodal bot.  He can navigate the web or a desktop.  
 
-That means he can navigate web pages and SaaS apps or he can work on a remote desktop and send emails, search for flights, check Slack, do research and more. 
+That means he can navigate SaaS apps or he can work on a remote desktop and send emails, search for flights, check Slack, do research and more. 
 
 Robbie-g2, aka Gen 2, is a leap from our first gen agents, SurfPizza and SurfSlicer.  He's very capable at navigating complex, never before seen GUIs via a remote virtual desktop which the AgentSea stack serves up as a device to him via DeviceBay. He connects to it via ToolFuse and AgentDesk, which lets him know what he can do with it, like move the mouse, send key commands, etc. 
 
