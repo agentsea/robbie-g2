@@ -12,13 +12,13 @@ packages = [{include = "robbieg2"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 pydantic = "^2.6.3"
-surfkit = "^0.1.228"
 opencv-python = "^4.10.0.84"
 numpy = "^1.26.4"
 scikit-learn = "^1.5.0"
 easyocr = "^1.7.1"
 torch = { version = "2.2.2", source = "pypi" }
 pillow = "^10.3.0"
+surfkit = "^0.1.231"
 
 
 [tool.poetry.group.dev.dependencies]
