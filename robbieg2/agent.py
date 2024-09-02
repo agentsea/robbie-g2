@@ -145,6 +145,7 @@ class RobbieG2(TaskAgent):
         Returns:
             Task: The task
         """
+        start_time = time.time()  # Start time measurement
 
         # Post a message to the default thread to let the user know the task is in progress
         task.post_message("Actor", f"Starting task '{task.description}'")
@@ -312,10 +313,16 @@ Let me know when you are ready and I'll send you the first screenshot.
                 task.error = str(e)
                 task.save()
                 task.post_message("Actor", f"❗ Error taking action: {e}")
+                end_time = time.time()  # End time measurement
+                elapsed_time = end_time - start_time
+                console.print(f"Time taken to solve task: {elapsed_time:.2f} seconds", style="green")
                 return task
 
             if done:
                 console.print("task is done", style="green")
+                end_time = time.time()  # End time measurement
+                elapsed_time = end_time - start_time
+                console.print(f"Time taken to solve task: {elapsed_time:.2f} seconds", style="green")
                 return task
 
             time.sleep(2)
@@ -324,6 +331,10 @@ Let me know when you are ready and I'll send you the first screenshot.
         task.save()
         task.post_message("Actor", "❗ Max steps reached without solving task")
         console.print("Reached max steps without solving task", style="red")
+
+        end_time = time.time()  # End time measurement
+        elapsed_time = end_time - start_time
+        console.print(f"Time taken to solve task: {elapsed_time:.2f} seconds", style="green")
 
         return task
     
