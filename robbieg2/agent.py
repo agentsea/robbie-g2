@@ -635,16 +635,6 @@ Please return just the raw JSON.
                 "Actor", f"👁️ Result from taking action: {action_response}"
             )
 
-        # Record the action for feedback and tuning
-        task.record_action(
-            prompt=response.prompt,
-            action=action,
-            tool=semdesk.ref(),
-            result=action_response,
-            agent_id=self.name(),
-            model=response.model,
-        )
-
         thread.add_msg(response.msg)
 
     @classmethod
