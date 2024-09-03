@@ -523,8 +523,7 @@ Please return just the raw JSON.
 
             # The agent will return 'result' if it believes it's finished
             if selection.actor.action.name == "result":
-                console.print("final result: ", style="green")
-                console.print(JSON.from_data(selection.actor.action.parameters))
+                console.print(f"The final result is: {selection.actor.action.parameters['value']}", style="green")
                 task.post_message(
                     "Actor",
                     f"✅ I think the task is done, please review the result: {selection.actor.action.parameters['value']}",
