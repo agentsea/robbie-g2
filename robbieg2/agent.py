@@ -172,7 +172,7 @@ class RobbieG2(TaskAgent):
             task.post_message("Body", f"opening site url {site}...")
             semdesk.desktop.open_url(site)
             console.print("waiting for browser to open...", style="blue")
-            time.sleep(5)
+            time.sleep(10)
 
         # Get info about the desktop
         info = semdesk.desktop.info()
