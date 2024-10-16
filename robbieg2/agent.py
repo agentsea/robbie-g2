@@ -4,7 +4,7 @@ import time
 import traceback
 from typing import Final, List, Optional, Tuple, Type
 
-from agentdesk.device import Desktop
+from agentdesk.device_v1 import Desktop
 from devicebay import Device
 from pydantic import BaseModel, Field
 from rich.console import Console
@@ -20,7 +20,6 @@ from toolfuse.util import AgentUtils
 from .tool import SemanticDesktop, router
 from .clicker import similarity_ratio
 from .cheap_critic import assess_action_result
-from .img import Box, b64_to_image, image_to_b64
 
 
 logging.basicConfig(level=logging.INFO)
@@ -153,7 +152,7 @@ class RobbieG2(TaskAgent):
         # Create threads in the task to update the user
         console.print("creating threads...")
         task.ensure_thread("debug")
-        task.post_message("Actor", f"I'll post debug messages here", thread="debug")
+        task.post_message("Actor", "I'll post debug messages here", thread="debug")
 
         # Check that the device we received is one we support
         if not isinstance(device, Desktop):
@@ -186,7 +185,7 @@ class RobbieG2(TaskAgent):
                 "click",
                 "drag_mouse",
                 "mouse_coordinates",
-                "take_screenshot",
+                "take_screenshots",
                 "open_url",
                 "double_click",
             ]
@@ -351,7 +350,7 @@ Let me know when you are ready and I'll send you the first screenshot.
     ) -> dict:
         try:
             _thread = thread.copy()
-            screenshot_b64 = semdesk.desktop.take_screenshot()
+            screenshot_img = semdesk.desktop.take_screenshots()[0]
             critic_prompt = f"""
 You task is {task.description}. The screenshot is attached.
 You are attempting to do the following action: {current_action}.
@@ -370,7 +369,7 @@ Please return just the raw JSON.
             msg = RoleMessage(
                 role="user",
                 text=critic_prompt,
-                images=[f"data:image/png;base64,{screenshot_b64}"],
+                images=[screenshot_img],
             )
             _thread.add_msg(msg)
 
@@ -449,11 +448,11 @@ Please return just the raw JSON.
             task.post_message("Actor", "🤔 I'm thinking...")
 
             # Take a screenshot of the desktop and post a message with it
-            screenshot_b64 = semdesk.desktop.take_screenshot()
+            screenshot_img = semdesk.desktop.take_screenshots()[0]
             task.post_message(
                 "Actor",
                 "Current image",
-                images=[f"data:image/png;base64,{screenshot_b64}"],
+                images=[screenshot_img],
                 thread="debug",
             )
 
@@ -481,7 +480,7 @@ Please return just the raw JSON.
             msg = RoleMessage(
                 role="user",
                 text=step_prompt,
-                images=[f"data:image/png;base64,{screenshot_b64}"],
+                images=[screenshot_img],
             )
             _thread.add_msg(msg)
 
@@ -528,11 +527,11 @@ Please return just the raw JSON.
                     "Actor",
                     f"✅ I think the task is done, please review the result: {selection.actor.action.parameters['value']}",
                 )
-                task.status = TaskStatus.REVIEW
+                task.status = TaskStatus.FINISHED
                 task.save()
                 return _thread, True
 
-            im_start = b64_to_image(screenshot_b64)
+            im_start = screenshot_img
             continue_chain = True
             interruption_requested = False
 
@@ -560,7 +559,7 @@ Please return just the raw JSON.
                 if len(closest_actions) >= 2:
                     task.post_message(
                         "Body",
-                        f"Too many repeated actions. Getting back to Critic.",
+                        "Too many repeated actions. Getting back to Critic.",
                         thread="debug"
                     )
                     # Well, look like it's time to interrupt the flow and reconsider our life choices. 
@@ -588,9 +587,8 @@ Please return just the raw JSON.
 
                 # We analyze if we want to continue to the next action here. A cheap critic looks at the new screenshot and 
                 # decides if we should continue the chain or not. 
-                screenshot_upd = semdesk.desktop.take_screenshot()
-                im_upd = b64_to_image(screenshot_upd)
-                ssim, continue_chain = assess_action_result(im_start, im_upd)
+                screenshot_upd = semdesk.desktop.take_screenshots()[0]
+                ssim, continue_chain = assess_action_result(im_start, screenshot_upd)
 
                 # If we were typing text, and the screen changed too much, then we probably hit some hot keys by accident
                 # and scrolled down. We should stop and scroll back up, forcing recovery.
@@ -601,11 +599,10 @@ Please return just the raw JSON.
                 # There is a chance that if the last action was a click, then the result didn't load yet, and the SSIM will be high
                 # while it should be low. To avoid this, we check once again for this specific case in 5 seconds:
                 if next_action.name == "click_object" and ssim > 0.95:
-                    task.post_message("Critic", f"😴 Waiting to be sure that the result is loaded...", thread="debug")
+                    task.post_message("Critic", "😴 Waiting to be sure that the result is loaded...", thread="debug")
                     time.sleep(5)
-                    screenshot_upd = semdesk.desktop.take_screenshot()
-                    im_upd = b64_to_image(screenshot_upd)
-                    ssim, continue_chain = assess_action_result(im_start, im_upd)
+                    screenshot_upd = semdesk.desktop.take_screenshots()[0]
+                    ssim, continue_chain = assess_action_result(im_start, screenshot_upd)
                 task.post_message("Critic", f"🔍 SSIM: {ssim}", thread="debug")
                 
             return _thread, False

@@ -11,9 +11,8 @@ from mllm import RoleMessage, RoleThread, Router
 from pydantic import BaseModel, Field
 from rich.console import Console
 from rich.json import JSON
-from threadmem import RoleThread, RoleMessage
 
-from .img import Box, b64_to_image, image_to_b64
+from .img import Box, image_to_b64
 from .grid import create_grid_image, zoom_in, superimpose_images
 from .easyocr import find_all_text_with_bounding_boxes
 from .canny_composite import create_composite
@@ -81,8 +80,7 @@ def find_coordinates(semdesk, description: str, text: str) -> dict:
 
     # - Setting up the stage
 
-    starting_img_b64 = semdesk.desktop.take_screenshot()
-    starting_img = b64_to_image(starting_img_b64)
+    starting_img= semdesk.desktop.take_screenshots()[0]
     starting_img_path = os.path.join(semdesk.img_path, f"{click_hash}_starting.png")
     starting_img.save(starting_img_path)
     bounding_boxes.append(Box(0, 0, starting_img.width, starting_img.height))
@@ -118,7 +116,7 @@ def find_coordinates(semdesk, description: str, text: str) -> dict:
             )
             semdesk.task.post_message(
                 role="Clicker",
-                msg=f"Final debug img",
+                msg="Final debug img",
                 thread="debug",
                 images=[image_to_b64(debug_img)],
             )
@@ -135,7 +133,7 @@ def find_coordinates(semdesk, description: str, text: str) -> dict:
     else:
         semdesk.task.post_message(
             role="Clicker",
-            msg=f"No text to look for in the starting image.",
+            msg="No text to look for in the starting image.",
             thread="debug",
         )
     
@@ -143,7 +141,7 @@ def find_coordinates(semdesk, description: str, text: str) -> dict:
 
     semdesk.task.post_message(
         role="Clicker",
-        msg=f"Looking for a region of interest...",
+        msg="Looking for a region of interest...",
         thread="debug",
     )
     region_of_interest, bounding_box = method(semdesk, starting_img, starting_img_path, description, click_hash, "region")
@@ -156,7 +154,7 @@ def find_coordinates(semdesk, description: str, text: str) -> dict:
     region_of_interest_b64 = image_to_b64(region_of_interest)
     semdesk.task.post_message(
         role="Clicker",
-        msg=f"Found region of interest",
+        msg="Found region of interest",
         thread="debug",
         images=[region_of_interest_b64],
     )
@@ -204,7 +202,7 @@ def find_coordinates(semdesk, description: str, text: str) -> dict:
             )
             semdesk.task.post_message(
                 role="Clicker",
-                msg=f"Final debug img",
+                msg="Final debug img",
                 thread="debug",
                 images=[image_to_b64(debug_img)],
             )
@@ -267,7 +265,7 @@ def find_coordinates(semdesk, description: str, text: str) -> dict:
     )
     semdesk.task.post_message(
         role="Clicker",
-        msg=f"Final debug img",
+        msg="Final debug img",
         thread="debug",
         images=[image_to_b64(debug_img)],
     )
@@ -282,7 +280,7 @@ def backup_find_coordinates(semdesk, description: str) -> dict:
     # running three level of Grid + Zoom In; if that fails too, then we surely get back to Big Brain and ask some questions.
     semdesk.task.post_message(
         role="Clicker",
-        msg=f"Coordinates are not found. Falling back to bruteforce 3-level Grid Zoom In.",
+        msg="Coordinates are not found. Falling back to bruteforce 3-level Grid Zoom In.",
         thread="debug",
     )
 
@@ -291,8 +289,7 @@ def backup_find_coordinates(semdesk, description: str) -> dict:
     total_upscale = 1
     method = run_grid
 
-    starting_img_b64 = semdesk.desktop.take_screenshot()
-    starting_img = b64_to_image(starting_img_b64)
+    starting_img = semdesk.desktop.take_screenshots()[0]
     starting_img_path = os.path.join(semdesk.img_path, f"{click_hash}_starting.png")
     starting_img.save(starting_img_path)
     bounding_boxes.append(Box(0, 0, starting_img.width, starting_img.height))
@@ -342,7 +339,7 @@ def backup_find_coordinates(semdesk, description: str) -> dict:
     )
     semdesk.task.post_message(
         role="Clicker",
-        msg=f"Final debug img",
+        msg="Final debug img",
         thread="debug",
         images=[image_to_b64(debug_img)],
     )
@@ -375,7 +372,7 @@ def run_grid(semdesk, starting_image: Image.Image, starting_path: str,
     merged_image_b64 = image_to_b64(merged_image)
     semdesk.task.post_message(
         role="Clicker",
-        msg=f"Merged image",
+        msg="Merged image",
         thread="debug",
         images=[merged_image_b64],
     )
@@ -451,7 +448,7 @@ def run_composite(semdesk, starting_image: Image.Image, starting_path: str,
 
     semdesk.task.post_message(
         role="Clicker",
-        msg=f"Composite image",
+        msg="Composite image",
         thread="debug",
         images=[composite_b64],
     )

@@ -1,8 +1,7 @@
-from typing import Tuple, List
+from typing import Tuple
 from PIL import Image, ImageDraw, ImageFont
 import base64
 from io import BytesIO
-from PIL import Image, ImageDraw
 
 
 class Box:
@@ -61,44 +60,6 @@ class Box:
             round(self.right / upscale + parent_box.left),
             round(self.bottom / upscale + parent_box.top),
         )
-
-def divide_image_into_cells(
-    image: Image.Image, num_cells: int
-) -> Tuple[Image.Image, List[Image.Image], List[Box]]:
-    """Divides an image into a grid of cells, returning both the cropped images and their corresponding Box objects.
-
-    Args:
-        image (Image.Image): The input image to be divided.
-        num_cells (int): The number of cells per row and column.
-
-    Returns:
-        Tuple[Image.Image, List[Box]]: A composite image, and a list of boxes corresponding to each cell.
-    """
-    img_width, img_height = image.size
-    cell_width = img_width // num_cells
-    cell_height = img_height // num_cells
-
-    cropped_images: List[Image.Image] = []
-    boxes: List[Box] = []
-    for i in range(num_cells):
-        for j in range(num_cells):
-            box = Box(
-                i * cell_width,
-                j * cell_height,
-                (i + 1) * cell_width if (i + 1) * cell_width < img_width else img_width,
-                (
-                    (j + 1) * cell_height
-                    if (j + 1) * cell_height < img_height
-                    else img_height
-                ),
-            )
-            cropped_image = box.crop_image(image)
-            cropped_images.append(cropped_image)
-            boxes.append(box)
-
-    composite = combine_images_vertically(cropped_images)
-
-    return composite, cropped_images, boxes
 
 
 def create_grid_image_by_num_cells(
@@ -228,58 +189,6 @@ def create_grid_image_by_size(
             )
 
     return img
-
-
-def combine_images_vertically(images: List[Image.Image]) -> Image.Image:
-    """Combine images vertically and draw a small red circle in the center of each image."""
-    padding = 10
-    line_height = 2
-    total_height = sum(image.height + padding * 2 for image in images) + line_height * (
-        len(images) - 1
-    )
-    max_width = max(image.width for image in images) + 100
-
-    combined_image = Image.new("RGB", (max_width, total_height), "white")
-    draw = ImageDraw.Draw(combined_image)
-
-    # Attempt to use a larger font; adjust the path as necessary
-    try:
-        font = ImageFont.truetype("./font/arial.ttf", 36)
-    except IOError:
-        font = ImageFont.load_default()
-        print("Fallback to default font.")
-
-    y_offset = 0
-    for index, image in enumerate(images):
-        new_y_offset = y_offset + padding
-        combined_image.paste(image, (100, new_y_offset))
-
-        # Draw a small red circle in the center of the image
-        circle_radius = 5  # Radius of the circle
-        center_x = 100 + image.width // 2
-        center_y = new_y_offset + image.height // 2
-        # draw.ellipse(
-        #     [
-        #         (center_x - circle_radius, center_y - circle_radius),
-        #         (center_x + circle_radius, center_y + circle_radius),
-        #     ],
-        #     fill="red",
-        # )
-
-        draw.text(
-            (20, center_y - 18),
-            str(index),
-            fill="black",
-            font=font,
-        )
-        y_offset = new_y_offset + image.height + padding
-        if index < len(images) - 1:
-            draw.line(
-                [(0, y_offset), (max_width, y_offset)], fill="black", width=line_height
-            )
-            y_offset += line_height
-
-    return combined_image
 
 
 def zoom_in(

@@ -121,21 +121,21 @@ class SemanticDesktop(Tool):
         # TODO: fix click cords in agentd
         logging.debug("moving mouse")
         body = {"x": int(x), "y": int(y)}
-        resp = requests.post(f"{self.desktop.base_url}/move_mouse", json=body)
+        resp = requests.post(f"{self.desktop.base_url}/v1/move_mouse", json=body)
         resp.raise_for_status()
         time.sleep(2)
 
         if type == "single":
             logging.debug("clicking")
             resp = requests.post(
-                f"{self.desktop.base_url}/click", json={"button": button}
+                f"{self.desktop.base_url}/v1/click", json={"button": button}
             )
             resp.raise_for_status()
             time.sleep(2)
         elif type == "double":
             logging.debug("double clicking")
             resp = requests.post(
-                f"{self.desktop.base_url}/double_click", json={"button": button}
+                f"{self.desktop.base_url}/v1/double_click", json={"button": button}
             )
             resp.raise_for_status()
             time.sleep(2)
