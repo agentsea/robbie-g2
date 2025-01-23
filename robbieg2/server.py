@@ -9,7 +9,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from surfkit.server.routes import task_router
 
-from .agent import Agent, router
+from .agent import Agent
 
 # Configure logging
 logger: Final = logging.getLogger("robbieg2")
@@ -46,7 +46,7 @@ app.add_middleware(
     allow_headers=ALLOW_HEADERS,
 )
 
-app.include_router(task_router(Agent, router))
+app.include_router(task_router(Agent))
 
 if __name__ == "__main__":
     port = os.getenv("SERVER_PORT", "9090")
